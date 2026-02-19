@@ -34,7 +34,7 @@
     .hdr-sub{ color: rgba(226,232,240,0.80); font-size: 1.8rem; margin-top: 0.35rem; }
     .panel{ padding: 1%; }
     .panel-title{
-      font-size: 2rem;
+      font-size: 1.7rem;
       font-weight: 750;
       color: #ffffff;
       margin: 0 0 1.0rem 0;
@@ -67,10 +67,10 @@
       margin-bottom: 10px;
     }
     .swatch{ width: 15px; height: 15px; border-radius: 7.5px; margin-top: 2%; flex: 0 0 auto; }
-    .card-title{ font-weight: 800; color: #0f172a; font-size: 2rem; line-height: 1.2; }
+    .card-title{ font-weight: 800; color: #0f172a; font-size: 1.5rem; line-height: 1.2; }
     .card-li{ display:flex; gap: 8px; align-items:flex-start; margin-bottom: 8px; }
-    .dot{ font-size: 1.5rem; line-height: 1.25; margin-top: 0.5%; flex: 0 0 auto; }
-    .li-text{ font-size: 1.5rem; font-weight: 500; color: rgba(15,23,42,0.75); line-height: 1.4; }
+    .dot{ font-size: 0.7rem; line-height: 1.5; margin-top: 1%; flex: 0 0 auto; }
+    .li-text{ font-size: 1rem; font-weight: 500; color: rgba(15,23,42,0.75); line-height: 1.4; }
     .card-ft{
       border-top: 1px solid rgba(15,23,42,0.12);
       margin-top: 10px; padding-top: 10px;
@@ -81,7 +81,7 @@
 
     .disclaimer{
       margin-top: 0.02%;
-      padding: 0.5%;
+      padding: 2%;
       border-radius: 14px;
       background: rgba(255,255,255,1);
       border: 1px solid rgba(15,23,42,0.12);
@@ -95,8 +95,8 @@
       margin-bottom: 10px;
     }
     .disclaimer-item{ display:flex; gap: 10px; align-items:flex-start; margin-bottom: 0px; }
-    .disclaimer-bullet{ font-size: 1rem; line-height: 1.25; margin-top: 0.1%; flex: 0 0 auto; }
-    .disclaimer-text{ font-size: 1.25rem; font-weight: 550; line-height: 1.45; }
+    .disclaimer-bullet{ font-size: 1rem; line-height: 1.2; margin-top: 0.4%; flex: 0 0 auto; }
+    .disclaimer-text{ font-size: 1.22rem; font-weight: 550; line-height: 1.45; }
     .js-plotly-plot .plotly, .js-plotly-plot .plot-container{ background: transparent !important; }
   </style>
 </head>
@@ -157,6 +157,8 @@
       "It does not account for any differences between the Adero and FWO models; this comparison is anticipated to be incorporated later in 2026.",
       "It also does not incorporate the implementation of penalty amounts, as these remain subject to Council’s advice, which is presently under review.",
       "The model currently does not include calculations for superannuation or allowances.",
+      "The current Adero model does not account for overtime arising under clauses 28.5 and 28.10, nor does it incorporate the cumulative penalties methodology. This may result in an increased underpayment calculation for the cohort, particularly for Senior C and D classifications.",
+      "Clause 557C has been applied across all shifts, representing 15% of the modelled group based on 52.2 minutes."
     ];
 
     function formatCurrency(value){
@@ -254,7 +256,7 @@
         text: `<b><span style="color:${d.color}">${formatShort(d.value)}</span></b>`,
         showarrow: false,
         align: "center",
-        font: { size: 25, color: d.color },
+        font: { size: 18, color: d.color },
         bgcolor: "rgba(255,255,255,0.95)",
         bordercolor: "rgba(255,255,255,0.65)",
         borderwidth: 1,
@@ -274,7 +276,7 @@
           tickmode: "array",
           tickvals: x,
           ticktext: data.map(d => d.title ?? d.category ?? ""),
-          tickfont: { color: "rgba(226,232,240,0.92)", size: 28 }
+          tickfont: { color: "rgba(226,232,240,0.92)", size: 19 }
         },
         yaxis: {
           range: [0, maxVal * 1.18],
