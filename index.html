@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Woolworths Sensitivity Analysis</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+  <style>
+    :root{
+      --bg1: rgba(59,130,246,0.20);
+      --bg2: rgba(16,185,129,0.18);
+      --text: #e5e7eb;
+    }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 0%, var(--bg1), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 600px at 100% 10%, var(--bg2), rgba(0,0,0,0) 55%),
+        linear-gradient(135deg, #0b1220 0%, #0f172a 45%, #0b1220 100%);
+    }
+    .container{
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 4.5rem 2rem 2.5rem;
+      box-sizing: border-box;
+    }
+    .hdr-wrap{ text-align:center; margin-bottom: 1.5rem; }
+    .hdr-row{ display:inline-flex; align-items:center; gap:14px; }
+    .hdr-title{ font-size: 2.5rem; font-weight: 800; color: #fff; line-height: 1.15; }
+    .hdr-sub{ color: rgba(226,232,240,0.80); font-size: 1.8rem; margin-top: 0.35rem; }
+    .panel{ padding: 1%; }
+    .panel-title{
+      font-size: 2rem;
+      font-weight: 750;
+      color: #ffffff;
+      margin: 0 0 1.0rem 0;
+    }
+    .chart-wrap{ width: 100%; border-radius: 16px; }
+    .cards{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 14px;
+    }
+    @media (max-width: 1200px){ .cards{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px){
+      .cards{ grid-template-columns: 1fr; }
+      .hdr-title{ font-size: 2.0rem; }
+      .hdr-sub{ font-size: 1.25rem; }
+      .panel-title{ font-size: 1.5rem; }
+    }
+    .card{
+      background: rgba(255,255,255,0.97);
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.28);
+      padding: 14px 14px 12px 14px;
+      box-sizing: border-box;
+    }
+    .card-hdr{
+      display:flex; align-items:flex-start; gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(15,23,42,0.12);
+      margin-bottom: 10px;
+    }
+    .swatch{ width: 15px; height: 15px; border-radius: 7.5px; margin-top: 2%; flex: 0 0 auto; }
+    .card-title{ font-weight: 800; color: #0f172a; font-size: 2rem; line-height: 1.2; }
+    .card-li{ display:flex; gap: 8px; align-items:flex-start; margin-bottom: 8px; }
+    .dot{ font-size: 1.5rem; line-height: 1.25; margin-top: 0.5%; flex: 0 0 auto; }
+    .li-text{ font-size: 1.5rem; font-weight: 500; color: rgba(15,23,42,0.75); line-height: 1.4; }
+    .card-ft{
+      border-top: 1px solid rgba(15,23,42,0.12);
+      margin-top: 10px; padding-top: 10px;
+    }
+    .ft-lbl{ font-size: 1.5rem; font-weight: 750; color: rgba(15,23,42,0.55); }
+    .ft-val{ font-size: 1.5rem; font-weight: 900; margin-top: 2px; }
+    .spacer-lg{ height: 2rem; }
+
+    .disclaimer{
+      margin-top: 0.02%;
+      padding: 0.5%;
+      border-radius: 14px;
+      background: rgba(255,255,255,1);
+      border: 1px solid rgba(15,23,42,0.12);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+      color: rgba(15,23,42,0.75);
+    }
+    .disclaimer-title{
+      font-weight: 900;
+      color: #0f172a;
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+    }
+    .disclaimer-item{ display:flex; gap: 10px; align-items:flex-start; margin-bottom: 0px; }
+    .disclaimer-bullet{ font-size: 1rem; line-height: 1.25; margin-top: 0.1%; flex: 0 0 auto; }
+    .disclaimer-text{ font-size: 1.25rem; font-weight: 550; line-height: 1.45; }
+    .js-plotly-plot .plotly, .js-plotly-plot .plot-container{ background: transparent !important; }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="app"></div>
+
+  <script>
+    const DATA = [
+      {
+        category: "28.11 Judgement\nmethodology - Without\nFWO - Pay Period",
+        value: 1886812624.44,
+        color: "#10b981",
+        title: "Scenario A",
+        features: [
+          "Clause 28.11 Approach: Judgement-Based Approach",
+          "Losses overlapping with FWO claim: Not Deducted",
+          "Set-Off Approach: Pay Period",
+        ],
+      },
+      {
+        category: "28.11 Judgement\nmethodology - Without\nFWO - Pay Period",
+        value: 559597808.88,
+        color: "#8b5cf6",
+        title: "Scenario B",
+        features: [
+          "Clause 28.11 Approach: Judgement-Based Approach",
+          "Losses overlapping with FWO claim: Deducted",
+          "Set-Off Approach: Pay Period",
+        ],
+      },
+      {
+        category: "28.11 Judgement\nmethodology - Without\nFWO - Bi Annual",
+        value: 441263263.41,
+        color: "#06b6d4",
+        title: "Scenario C",
+        features: [
+          "Clause 28.11 Approach: Judgement-Based Approach",
+          "Losses overlapping with FWO claim: Deducted",
+          "Set-Off Approach: Bi-Annual",
+        ],
+      },
+      {
+        category: "28.11 Coles\nmethodology - With\nFWO - Bi Annual",
+        value: 244882345.84,
+        color: "#f59e0b",
+        title: "Scenario D",
+        features: [
+          "Clause 28.11 Approach: Coles Based Approach",
+          "Losses overlapping with FWO claim: Deducted",
+          "Set-Off Approach: Bi-Annual",
+        ],
+      },
+    ];
+
+    const disclaimerItems = [
+      "This analysis does not include consideration of any extended claim period beyond 2020.",
+      "It does not account for any differences between the Adero and FWO models; this comparison is anticipated to be incorporated later in 2026.",
+      "It also does not incorporate the implementation of penalty amounts, as these remain subject to Council’s advice, which is presently under review.",
+      "The model currently does not include calculations for superannuation or allowances.",
+    ];
+
+    function formatCurrency(value){
+      return `A$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    function formatShort(value){
+      if (value >= 1_000_000_000) return `$${(value/1_000_000_000).toFixed(2)}B`;
+      if (value >= 1_000_000) return `$${(value/1_000_000).toFixed(2)}M`;
+      return formatCurrency(value);
+    }
+    function el(tag, attrs={}, children=[]){
+      const node = document.createElement(tag);
+      for (const [k,v] of Object.entries(attrs)){
+        if (k === "class") node.className = v;
+        else if (k === "html") node.innerHTML = v;
+        else node.setAttribute(k, v);
+      }
+      for (const c of children) node.appendChild(c);
+      return node;
+    }
+    function renderDisclaimer(){
+      const items = disclaimerItems.map(t =>
+        el("div", { class: "disclaimer-item" }, [
+          el("div", { class: "disclaimer-bullet", html: "●" }),
+          el("div", { class: "disclaimer-text", html: t }),
+        ])
+      );
+      return el("div", { class: "disclaimer" }, [
+        el("div", { class: "disclaimer-title", html: "Disclaimer" }),
+        ...items
+      ]);
+    }
+    function renderCardsRow(data){
+      const wrap = el("div", { class: "cards" });
+      for (const d of data){
+        const titleHtml = (d.title ?? d.category ?? "").replaceAll("\n", "<br>");
+        const liNodes = (d.features ?? []).map(f =>
+          el("div", { class: "card-li" }, [
+            el("div", { class: "dot", html: "●", style: `color:${d.color}` }),
+            el("div", { class: "li-text", html: f }),
+          ])
+        );
+        const card = el("div", { class: "card", style: `border: 2px solid ${d.color};` }, [
+          el("div", { class: "card-hdr", style: `border-bottom-color: ${d.color}22;` }, [
+            el("div", { class: "swatch", style: `background:${d.color};` }),
+            el("div", { class: "card-title", html: titleHtml }),
+          ]),
+          ...liNodes,
+          el("div", { class: "card-ft" }, [
+            el("div", { class: "ft-lbl", html: "Total Amount" }),
+            el("div", { class: "ft-val", html: formatCurrency(d.value), style: `color:${d.color};` }),
+          ])
+        ]);
+        wrap.appendChild(card);
+      }
+      return wrap;
+    }
+    function renderHeader(title, sub){
+      return el("div", { class: "hdr-wrap" }, [
+        el("div", { class: "hdr-row" }, [ el("div", { class: "hdr-title", html: title }) ]),
+        el("div", { class: "hdr-sub", html: sub }),
+      ]);
+    }
+    function renderSection({ data, headerTitle, headerSub, panelTitle="Comparative Analysis", chartId }){
+      const section = el("div", { class: "panel" });
+      section.appendChild(renderHeader(headerTitle, headerSub));
+      section.appendChild(el("div", { class: "panel-title", html: panelTitle }));
+      section.appendChild(el("div", { id: chartId, class: "chart-wrap" }));
+      section.appendChild(renderCardsRow(data));
+      section.appendChild(el("div", { class: "spacer-lg" }));
+      section.appendChild(renderDisclaimer());
+      return section;
+    }
+    function drawChart(chartId, data){
+      const values = data.map(d => d.value);
+      const colors = data.map(d => d.color);
+      const titles = data.map(d => (d.title ?? d.category ?? "").replaceAll("\n"," "));
+      const x = data.map((_, i) => i);
+      const maxVal = values.length ? Math.max(...values) : 1;
+
+      const trace = {
+        type: "bar",
+        x,
+        y: values,
+        marker: { color: colors },
+        width: 0.42,
+        customdata: titles,
+        hovertemplate: "<b>%{customdata}</b><br>Total: %{y:,.2f} AUD<extra></extra>"
+      };
+
+      const annotations = data.map((d, i) => ({
+        x: i,
+        y: d.value,
+        yshift: 28,
+        text: `<b><span style="color:${d.color}">${formatShort(d.value)}</span></b>`,
+        showarrow: false,
+        align: "center",
+        font: { size: 25, color: d.color },
+        bgcolor: "rgba(255,255,255,0.95)",
+        bordercolor: "rgba(255,255,255,0.65)",
+        borderwidth: 1,
+        borderpad: 6
+      }));
+
+      const layout = {
+        height: 520,
+        margin: { l: 40, r: 40, t: 20, b: 85 },
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        showlegend: false,
+        annotations,
+        xaxis: {
+          showgrid: false,
+          zeroline: false,
+          tickmode: "array",
+          tickvals: x,
+          ticktext: data.map(d => d.title ?? d.category ?? ""),
+          tickfont: { color: "rgba(226,232,240,0.92)", size: 28 }
+        },
+        yaxis: {
+          range: [0, maxVal * 1.18],
+          showgrid: false,
+          zeroline: false,
+          ticks: "",
+          showticklabels: false
+        }
+      };
+
+      Plotly.newPlot(chartId, [trace], layout, { displayModeBar: false, responsive: true });
+    }
+
+    const app = document.getElementById("app");
+    app.appendChild(renderSection({
+      data: DATA,
+      headerTitle: "Woolworths Class Action: Whole Class Sensitivity Analysis",
+      headerSub: " Methodology Comparison",
+      panelTitle: "Comparative Analysis",
+      chartId: "chart_1"
+    }));
+    drawChart("chart_1", DATA);
+    window.addEventListener("resize", () => Plotly.Plots.resize("chart_1"));
+  </script>
+</body>
+</html>
